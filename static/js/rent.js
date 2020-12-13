@@ -268,4 +268,308 @@ $(document).ready( function () {
         } else if ($('#txt_modal_param').val() == 'receiptno') {
             $('#txt_RentNo').val(code);
             $('#txt_Date').val(name);
-            $('#txt_CustomerID').val(no
+            $('#txt_CustomerID').val(note);
+            $('#txt_CustomerID').change();
+            // $('#txt_SalepersonFirstName').val(option);
+            // $('#txt_SalepersonLastName').val(option1);
+
+            get_rent_detail(code);
+        }
+
+        $('#modal_form').modal('toggle');
+    });
+
+    // detect modal close form
+    $('#modal_form').on('hidden.bs.modal', function () {
+        re_order_no();
+    });
+
+    //disable_ui();
+    reset_form();
+
+    re_order_no();
+    re_calculate_total();
+
+    $('#btnNew').click(function () {
+        reset_form();
+
+        re_order_no();
+        re_calculate_total();
+    });
+    $('#btnEdit').click(function () {
+        $.ajax({
+            url:  '/rent/list',
+            type:  'get',
+            dataType:  'json',
+            success: function  (data) {
+                let rows =  '';
+                var i = 1;
+                data.rents.forEach(rent => {
+                    var rent_date = rent.date;
+                    rent_date = rent_date.slice(0,10).split('-').reverse().join('/');
+                    var rent_duedate = rent.duedate;
+                    rent_duedate = rent_duedate.slice(0,10).split('-').reverse().join('/');
+                    rows += `
+                    <tr class="d-flex">
+                        <td class='col-1'>${i++}</td>
+                        <td class='col-3'><a class='a_click' href='#'>${rent.receiptno}</a></td>
+                        <td class='col-5'>${rent_date}</td>
+                        <td class='col-3'>${rent.customerid_id}</td>
+                        <td class='hide'>${rent.total}</td>
+                    </tr>`;
+                });
+                $('#table_modal > tbody').html(rows);
+
+                $('#model_header_1').text('Rent No');
+                $('#model_header_2').text('Rent Date');
+                $('#model_header_3').text('Customer ID');
+            },
+        });
+        // open popup
+        $('#txt_modal_param').val('receiptno');
+        $('#modal_form').modal();
+    });
+
+    $('#btnSave').click(function () {
+
+        var customerid = $('#txt_CustomerFirstName').val().trim();
+        if (customerid == '') {
+            alert('กรุณาระบุ Customer');
+            $('#txt_CustomerID').focus();
+            return false;
+        }
+        var payment_code = $('#txt_PaymentMethod').val().trim();
+        if (payment_code == '') {
+            alert('กรุณาระบุ Payment');
+            $('#txt_PaymentCode').focus();
+            return false;
+        }
+        var rent_duedate = $('#txt_ReturnDate').val().trim();
+        if (!dateRegex.test(rent_duedate)) {
+            alert('กรุณาระบุวันที่ ให้ถูกต้อง');
+            $('#txt_ReturnDate').focus();
+            return false;
+        }
+        if ($('#txt_RentNo').val() == '<new>') {
+            var token = $('[name=csrfmiddlewaretoken]').val();
+
+            $.ajax({
+                url:  '/rent/create',
+                type:  'post',
+                data: $('#form_rent').serialize() + "&lineitem=" + lineitem_to_json(),
+                headers: { "X-CSRFToken": token },
+                dataType:  'json',
+                success: function  (data) {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        $('#txt_RentNo').val(data.rent.receiptno)
+                        alert('บันทึกสำเร็จ');
+                    }
+                },
+            });
+        } else {
+            var token = $('[name=csrfmiddlewaretoken]').val();
+            console.log($('#form_rent').serialize());
+            console.log(lineitem_to_json());
+            $.ajax({
+                url:  '/rent/update/' + $('#txt_RentNo').val(),
+                type:  'post',
+                data: $('#form_rent').serialize() + "&lineitem=" + lineitem_to_json(),
+                headers: { "X-CSRFToken": token },
+                dataType:  'json',
+                success: function  (data) {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert('บันทึกสำเร็จ');
+                    }
+                },
+            });
+        }
+
+    });
+
+    $('#btnDelete').click(function () {
+        if ($('#txt_RentNo').val() == '<new>') {
+            alert ('ไม่สามารถลบ Rent ใหม่ได้');
+            return false;
+        }
+        if (confirm ("คุณต้องการลบ Rent No : '" + $('#txt_RentNo').val() + "' ")) {
+            console.log('Delete ' + $('#txt_RentNo').val());
+            var token = $('[name=csrfmiddlewaretoken]').val();
+            $.ajax({
+                url:  '/rent/delete/' + $('#txt_RentNo').val(),
+                type:  'post',
+                headers: { "X-CSRFToken": token },
+                dataType:  'json',
+                success: function  (data) {
+                    reset_form();
+                },
+            });
+        }
+    });
+    $('#btnPdf').click(function () {
+        if ($('#txt_RentNo').val() == '<new>') {
+            alert ('กรุณาระบุ Rent No');
+            return false;
+        }
+        window.open('/rent/pdf/' + $('#txt_RentNo').val());
+    });
+    $('#btnPrint').click(function () {
+        window.open('/rent/report');
+    });
+
+});
+
+function lineitem_to_json () {
+    var rows = [];
+    var i = 0;
+    $("#table_main tbody tr").each(function(index) {
+        if ($(this).find('.movieid_1 > span').html() != '') {
+            rows[i] = {};
+            rows[i]["lineitem"] = (i+1);
+            rows[i]["movieid"] = $(this).find('.movieid_1 > span').html();
+            rows[i]["title"] = $(this).find('.title').html();
+            rows[i]["unitday"] = $(this).find('.unitday').html();
+            rows[i]["unitprice"] = $(this).find('.unitprice').html();
+            rows[i]["extendedprice"] = $(this).find('.extendedprice').html();
+            i++;
+        }
+    });
+    var obj = {};
+    obj.lineitem = rows;
+    console.log(JSON.stringify(obj));
+
+    return JSON.stringify(obj);
+}
+
+function get_rent_detail (receiptno) {
+    $.ajax({
+        url:  '/rent/detail/' + encodeURIComponent(receiptno),
+        type:  'get',
+        dataType:  'json',
+        success: function  (data) {
+            reset_table();
+            //console.log(data.rentlineitem.length);
+            $("#txt_PaymentMethod").val(data.rent.payment_code__name)
+            $("#txt_PaymentCode").val(data.rent.payment_code)
+            $("#txt_PaymentReference").val(data.rent.paymentref)
+
+
+            for(var i=ROW_NUMBER;i<data.rentlineitem.length;i++) {
+                $('.table-add').click();
+            }
+            var i = 0;
+            $("#table_main tbody tr").each(function() {
+                if (i < data.rentlineitem.length) {
+                    $(this).find('.movieid_1 > span').html(data.rentlineitem[i].movieid);
+                    $(this).find('.title').html(data.rentlineitem[i].movieid__title);
+                    $(this).find('.unitday').html(data.rentlineitem[i].unitday);
+                    $(this).find('.unitprice').html(data.rentlineitem[i].unitprice);
+                }
+                i++;
+            });
+            re_calculate_total();
+        },
+    });
+}
+
+function re_calculate_total () {
+    var total = 0;
+    $("#table_main tbody tr").each(function() {
+
+        var movieid = $(this).find('.movieid_1 > span').html();
+        //console.log (invoice_no);
+        var unitprice = $(this).find('.unitprice').html();
+        $(this).find('.unitprice').html(((unitprice)));
+        var unitday = $(this).find('.unitday').html();
+        $(this).find('.unitday').html(parseInt(unitday));
+        if (movieid != '') {
+                var extendedprice = unitday * unitprice
+            $(this).find('.extendedprice').html(formatNumber(extendedprice));
+            total += extendedprice;
+        }
+    });
+
+    $('#lbl_Total').text(formatNumber(total));
+    $('#txt_Total').val($('#lbl_Total').text());
+}
+
+function reset_form() {
+    $('#txt_RentNo').attr("disabled", "disabled");
+    $('#txt_RentNo').val('<new>');
+
+    reset_table();
+
+    $('#txt_Date').val(new Date().toJSON().slice(0,10).split('-').reverse().join('/'));
+    $('#txt_ReturnDate').val(new Date().toJSON().slice(0,10).split('-').reverse().join('/'));
+
+    $('#txt_CustomerID').val('');
+    $('#txt_CustomerFirstName').val('');
+    $('#txt_CustomerLastName').val('');
+    $('#txt_CustomerPhone').val('');
+    $('#txt_CustomerEmail').val('');
+
+    $('#txt_PaymentMethod').val('');
+    $('#txt_PaymentReference').val('');
+
+    $('#lbl_Total').val('0.00');
+
+    $('#lbl_Total').text('0.00');
+
+}
+
+function reset_table() {
+    $('#table_main > tbody').html('');
+    for(var i=1; i<= ROW_NUMBER; i++) {
+        $('.table-add').click();
+    }
+}
+
+function re_order_no () {
+    var i = 1;
+    $("#table_main tbody tr").each(function() {
+        $(this).find('.order_no').html(i);
+        i++;
+    });
+}
+
+
+function disable_ui () {
+    $('#txt_Date').attr("disabled", "disabled");
+    $('#btn_Date').attr("disabled", "disabled");
+
+    $('#txt_ReturnDate').attr("disabled", "disabled");
+    $('#btn_ReturnDate').attr("disabled", "disabled");
+}
+
+function enable_ui () {
+    $('#txt_Date').removeAttr("disabled");
+    $('#btn_Date').removeAttr("disabled");
+
+    $('#txt_ReturnDate').removeAttr("disabled");
+    $('#btn_ReturnDate').removeAttr("disabled");
+}
+
+
+
+function formatNumber (num) {
+    if (num === '') return '';
+    num = parseFloat(num);
+    return num.toFixed(2).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}
+
+function isInt(n){
+    return Number(n) === n && n % 1 === 0;
+}
+
+function isFloat(n){
+    return Number(n) === n && n % 1 !== 0;
+}
+
+var dateRegex = /^(?=\d)(?:(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:\x20|$))|(?:2[0-8]|1\d|0?[1-9]))([-.\/])(?:1[012]|0?[1-9])\1(?:1[6-9]|[2-9]\d)?\d\d(?:(?=\x20\d)\x20|$))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\x20[AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/;
+//var numberRegex = /^-?\d+\.?\d*$/;
+var numberRegex = /^-?\d*\.?\d*$/
+
+

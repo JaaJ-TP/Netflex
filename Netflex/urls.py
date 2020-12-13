@@ -21,11 +21,16 @@ from rent import views as rent_views
 from report import views as report_views
 from customer import views as customer_views
 
+from accounts.views import login_view, register_view, logout_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', movie_views.index, name='index'),
     
+    path('accounts/login/', login_view),
+    path('accounts/register/', register_view),
+    path('accounts/logout/', logout_view),
+
 
     path('report', report_views.index, name='index'),
     path('report/ReportListAllMovies', report_views.ReportListAllMovies),
@@ -50,10 +55,12 @@ urlpatterns = [
     path('movie/report', movie_views.MovieReport.as_view(), name='movie_report'),
 
     path('rent', rent_views.index, name='index'),
+    path('payment/list', rent_views.PaymentList.as_view(), name='payment_list'),
+    path('payment/detail/<pk>', rent_views.PaymentDetail.as_view(), name='payment_detail'),
     path('movie/list', rent_views.MovieList.as_view(), name='movie_list'),
-    path('rent/list', rent_views.RentList.as_view(), name='rent_list'),
+    path('rent/list', rent_views.RentList, name='rent_list'),
     path('rent/detail/<str:pk>/<str:pk2>', rent_views.RentDetail.as_view(), name='rent_detail'),
-    path('rent/create', rent_views.RentCreate.as_view(), name='rent_create'),
+    path('rent/create', rent_views.RentCreate, name='rent_create'),
     path('rent/update/<str:pk>/<str:pk2>', rent_views.RentUpdate.as_view(), name='rent_update'),
     path('rent/delete/<str:pk>/<str:pk2>', rent_views.RentDelete.as_view(), name='rent_delete'),
     path('rent/pdf/<str:pk>/<str:pk2>', rent_views.RentPDF.as_view(), name='rent_pdf'),
@@ -66,4 +73,6 @@ urlpatterns = [
     path('customer/update/<str:pk>', customer_views.CustomerUpdate.as_view(), name='customer_update'),
     path('customer/delete/<str:pk>', customer_views.CustomerDelete.as_view(), name='customer_delete'),
     path('customer/report', customer_views.CustomerReport.as_view(), name='customer_report'),
+
+    
 ]

@@ -2,6 +2,16 @@ from django.db import models
 
 # Create your models here.
 
+class Payment(models.Model):
+    payment_code = models.CharField(max_length=10, primary_key=True)
+    name = models.CharField(max_length=100, null=True)
+
+    class Meta:
+        db_table = "payment"
+        managed = False
+    def __str__(self):
+        return self.payment_code
+
 class Actor(models.Model):
     actorid = models.CharField(max_length=10, primary_key=True)
     afname = models.CharField(max_length=100, null=True)

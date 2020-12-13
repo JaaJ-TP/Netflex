@@ -19,6 +19,23 @@ def index(request):
     data = {}
     return render(request,'movie/movie.html', data)
 
+class PaymentList(View):
+    def get(self, request):
+        payments = list(Payment.objects.all().values())
+        data = dict()
+        data['payments'] = payments
+        response = JsonResponse(data)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
+class PaymentDetail(View):
+    def get(self, request, pk):
+        payment = get_object_or_404(Payment, pk=pk)
+        data = dict()
+        data['payments'] = model_to_dict(payment)
+        response = JsonResponse(data)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
 
 class ActorList(View):
     def get(self, request):

@@ -4,6 +4,8 @@ from django.shortcuts import render
 from django.shortcuts import render
 from django.http import HttpResponse
 
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import get_object_or_404
 from django.views.generic import View
 from django.http import JsonResponse
@@ -16,12 +18,66 @@ from django.db import connection
 from rent.models import *
 import json
 
+def registerPage(request):
+	if request.user.is_authenticated:
+		return redirect('home')
+	else:
+		form = CreateUserForm()
+		if request.method == 'POST':
+			form = CreateUserForm(request.POST)
+			if form.is_valid():
+				form.save()
+				user = form.cleaned_data.get('username')
+				messages.success(request, 'Account was created for ' + user)
+
+				return redirect('login')
+			
+
+		context = {'form':form}
+		return render(request, 'accounts/register.html', context)
+
+def loginPage(request):
+	if request.user.is_authenticated:
+		return redirect('home')
+	else:
+		if request.method == 'POST':
+			username = request.POST.get('username')
+			password =request.POST.get('password') 
+
+			user = authenticate(request, username=username, password=password)
+
+			if user is not None:
+				login(request, user)
+				return redirect('home')
+			else:
+				messages.info(request, 'Username OR password is incorrect')
+
+		context = {}
+		return render(request, 'accounts/login.html', context)
 
 # Create your views here.
 def index(request):
     data = {}
     return render(request,'rent/rent.html', data)
 
+class PaymentList(View):
+    def get(self, request):
+        payments = list(Payment.objects.all().values())
+        data = dict()
+        data['payments'] = payments
+        response = JsonResponse(data)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
+class PaymentDetail(View):
+    def get(self, request, pk):
+        payment = get_object_or_404(Payment, pk=pk)
+        data = dict()
+        data['payments'] = model_to_dict(payment)
+        print(data)
+        response = JsonResponse(data)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
 
 class ActorList(View):
     def get(self, request):
@@ -82,6 +138,7 @@ class CustomerList(View):
         customers = list(Customer.objects.all().values())
         data = dict()
         data['customers'] = customers
+        print(data)
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
         return response
@@ -91,6 +148,7 @@ class CustomerDetail(View):
         customer = get_object_or_404(Customer, pk=pk)
         data = dict()
         data['customers'] = model_to_dict(customer)
+        print(data)
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
         return response
@@ -116,7 +174,7 @@ class RentList(View):
 class RentDetail(View):
     def get(self, request, pk, pk2):
         receiptno = pk + '/' + pk2
-        rent = list(Rent.objects.select_related("customer").filter(receiptno=receiptno).values('receiptno', 'date','duedate','customerid','customerid__cfname', 'customerid__clname', 'customerid__cphone','customerid__cemail','salefname','salelname','paymentref','total'))
+        rent = list(Rent.objects.select_related("customer").filter(receiptno=receiptno).values('receiptno', 'date','duedate','customerid','customerid__cfname', 'customerid__clname', 'customerid__cphone','customerid__cemail','paymentmethod','paymentref','total'))
         rentlineitem = list(RentLineItem.objects.select_related('movieid').filter(receiptno=receiptno).order_by('lineitem').values("lineitem", "movieid", "movieid__title", "unitday",'unitprice','extendedprice'))
 
         data = dict()
@@ -138,8 +196,8 @@ class RentLineItemForm(forms.ModelForm):
     class Meta:
         model = RentLineItem
         fields = '__all__'
-
-
+        
+@login_required (login_url="login")
 @method_decorator(csrf_exempt, name='dispatch')
 class RentCreate(View):
     def post(self, request):
@@ -250,7 +308,7 @@ class RentReport(View):
             cursor.execute(
                 'SELECT r.receiptno as "Receipt No",r.date as "Rent Date",r.duedate as "Return Date",r.customerid as "Customer ID"'
                 ',c.cfname as "Customer First Name",c.clname as "Customer Last Name",c.cphone as "Phone",c.cemail as "Email",'
-                ' r.salefname as "Sale First Name",r.salelname as "Sale Last Name"'
+                ' r.paymentmethod as "Payment Method"'
                 ',r.paymentref as "Payment Reference",r.total as "Total"'
                 'FROM rent as r JOIN customer as c'
                 ' ON r.customerid = c.customerid'
