@@ -1,0 +1,32 @@
+{% extends 'base_blank.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Register{% endblock %}
+
+{% block title_name %}Register{% endblock %}
+
+{% block content %}
+    <table class='table table-bordered table-hover'>
+        <thead class="thead-dark">
+        <tr>
+            <th>#</th>
+            {% for name in column_name %}
+            <th>{{ name }} </th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+    {% for lineitem in data %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ lineitem.customer_id }}</td>
+            <td>{{ lineitem.customer_first_name }}</td>
+            <td>{{ lineitem.customer_last_name }}</td>
+            <td>{{ lineitem.phone }}</td>
+            <td>{{ lineitem.email }}</td>
+        <tr>
+    {% endfor %}
+        </tbody>
+{% endblock %}
+

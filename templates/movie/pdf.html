@@ -1,0 +1,65 @@
+{% extends 'base_blank.html' %}
+{% load static %}
+
+{% block title %}Movie Report{% endblock %}
+
+{% block title_name %}Netflex{% endblock %}
+
+{% block script %}
+{% endblock %}
+
+{% block content %}
+<div id='content'>
+    <div class='row'>
+        <div class='col-sm'>
+        Movie ID : {{ movie.movieid }}<br>
+        </div>
+        <div class='col-sm'>
+        Title: {{ movie.title }}<br>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm'>
+        Genre : {{ movie.genre }}<br>
+        </div>
+        <div class='col-sm'>
+        CopyRight Date: {{ movie.copyrightdate }}<br>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm'>
+        Producer Id : {{ movie.producerid }}<br>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm'>
+        First Name : {{ movie.producerid__pfname }}<br>
+        </div>
+        <div class='col-sm'>
+        Last Name : {{ movie.producerid__plname }}<br>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm'>
+        Price : {{ movie.price }}<br>
+        </div>
+    </div>
+    <table class='table'>
+        <tr>
+            <th>#</th>
+            <th>Actor ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+        </tr>
+    {% for lineitem in movieactor %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ lineitem.actorid }}</td>
+            <td>{{ lineitem.actorid__afname }}</td>
+            <td>{{ lineitem.actorid__alname }}</td>
+        <tr>
+    {% endfor %}
+    </table>
+</div>
+{% endblock %}
+

@@ -1,0 +1,38 @@
+{% extends 'base_blank.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Rent Report{% endblock %}
+
+{% block title_name %}Rent Report{% endblock %}
+
+{% block content %}
+    <table class='table table-bordered table-hover'>
+        <thead class="thead-dark">
+        <tr>
+            <th>#</th>
+            {% for name in column_name %}
+            <th>{{ name }} </th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+    {% for lineitem in data %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ lineitem.receipt_no }}</td>
+            <td>{{ lineitem.rent_date }}</td>
+            <td>{{ lineitem.return_date }}</td>
+            <td>{{ lineitem.customer_id }}</td>
+            <td>{{ lineitem.customer_first_name }}</td>
+            <td>{{ lineitem.customer_last_name }}</td>
+            <td>{{ lineitem.phone }}</td>
+            <td>{{ lineitem.email }}</td>
+            <td>{{ lineitem.sale_first_name }}</td>
+            <td>{{ lineitem.sale_last_name }}</td>
+            <td>{{ lineitem.payment_reference }}</td>
+            <td>{{ lineitem.total }}</td>
+        <tr>
+    {% endfor %}
+        </tbody>
+{% endblock %}

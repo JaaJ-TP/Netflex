@@ -1,0 +1,91 @@
+{% extends 'base_blank.html' %}
+{% load static %}
+
+{% block title %}Rent Report{% endblock %}
+
+{% block title_name %}Rent Form{% endblock %}
+
+{% block script %}
+{% endblock %}
+
+{% block content %}
+<div id='content'>
+    <div class='row'>
+        <div class='col-sm'>
+        Rent ID : {{ rent.receiptno }}<br>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm'>
+        Rent Date : {{ rent.date }}<br>
+        </div>
+        <div class='col-sm'>
+        Return Date : {{ rent.duedate }}<br>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm'>
+        Customer ID : {{ rent.customerid }}<br>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm'>
+        Customer First Name : {{ rent.customerid__cfname }}<br>
+        </div>
+        <div class='col-sm'>
+        Customer Last Name : {{ rent.customerid__clname }}<br>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm'>
+        Customer Phone : {{ rent.customerid__cphone }}<br>
+        </div>
+        <div class='col-sm'>
+        Customer Email : {{ rent.customerid__cemail }}<br>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm'>
+        Saleperson First Name : {{ rent.salefname }}<br>
+        </div>
+        <div class='col-sm'>
+        Saleperson Last Name : {{ rent.salelname }}<br>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm'>
+        Payment Reference: {{ rent.paymentref }}<br>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm'>
+        Total : {{ rent.total }}<br>
+        </div>
+    </div>
+    <table class='table'>
+        <tr>
+            <th>#</th>
+            <th>*Movie No</th>
+            <th>Movie Title</th>
+            <th>Unit Day</th>
+            <th>Unit Price</th>
+            <th>Extended Price</th>
+        </tr>
+    {% for lineitem in rentlineitem %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ lineitem.movieid }}</td>
+            <td>{{ lineitem.movieid__title }}</td>
+            <td>{{ lineitem.unitday }}</td>
+            <td>{{ lineitem.unitprice }}</td>
+            <td>{{ lineitem.extendedprice }}</td>
+        <tr>
+    {% endfor %}
+        <tr>
+            <td colspan='4'></td>
+            <td align='right'>Total</td><td align='right'>{{ rent.total }}</td>
+        </tr>
+    </table>
+</div>
+{% endblock %}
+

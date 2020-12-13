@@ -1,0 +1,27 @@
+{% extends 'report/base_report.html' %}
+
+{% block content %}
+    
+    <table class='table'>
+        <tr>
+            <th>#</th>
+            {% for name in column_name %}
+            <th>{{ name }} </th>
+            {% endfor %}
+        </tr>
+    {% for lineitem in data %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ lineitem.customer_id }}</td>
+            <td>{{ lineitem.customer_first_name }}</td>
+            <td>{{ lineitem.customer_last_name }}</td>
+            <td>{{ lineitem.phone }}</td>
+            <td>{{ lineitem.email }}</td>
+        </tr>
+    {% endfor %}
+    
+    {% endblock %}
+    
+
+</body>
+</html>

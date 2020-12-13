@@ -1,0 +1,35 @@
+{% extends 'base_blank.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Movie Report{% endblock %}
+
+{% block title_name %}Movie Report{% endblock %}
+
+{% block content %}
+    <table class='table table-bordered table-hover'>
+        <thead class="thead-dark">
+        <tr>
+            <th>#</th>
+            {% for name in column_name %}
+            <th>{{ name }} </th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+    {% for lineitem in data %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ lineitem.movie_id }}</td>
+            <td>{{ lineitem.title}}</td>
+            <td>{{ lineitem.genre }}</td>
+            <td>{{ lineitem.copyright_date }}</td>
+            <td>{{ lineitem.producer_id  }}</td>
+            <td>{{ lineitem.producer_first_name }}</td>
+            <td>{{ lineitem.producer_last_name }}</td>
+            <td>{{ lineitem.price }}</td>
+        <tr>
+    {% endfor %}
+        </tbody>
+{% endblock %}
+

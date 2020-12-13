@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Netflex{% endblock %}
+
+{% block script %}
+    <script src="{% static 'js/movie.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+    <div style="font-size:0;" class="bg-secondary">
+        <input type='image' id='btnNew' src="{% static 'images/newOn.gif' %}"  alt="newOn">
+        <input type='image' id='btnEdit' src="{% static 'images/editOn.gif' %}"  alt="editOn">
+        <input type='image' id='btnSave' src="{% static 'images/saveOn.gif' %}"  alt="saveOn">
+        <input type='image' id='btnDelete' src="{% static 'images/deleteOn.gif' %}"  alt="deleteOn">
+        <input type='image' id='btnPdf' src="{% static 'images/pdfOn.gif' %}"  alt="pdfOn">
+        <input type='image' id='btnPrint' src="{% static 'images/printOn.gif' %}"  alt="printOn">
+    </div>
+    <br />
+    <form id='form_movie' action='/'>
+    {% csrf_token %}
+    <div class="container-fluid">
+        <div class='form-row align-items-center'>
+            <div class="col-lg-4 col-md-8 col-12 col-auto">
+                <div class='input-group mb-2'>
+                    <div class='input-group-prepend'>
+                        <div class='input-group-text'>*Movie ID :</div>
+                    </div>
+                    <input type='text' id='txt_MovieId' name='movieid' class='form-control' placeholder='Movie ID'>
+                </div>
+            </div>
+            <div class="col-0 col-lg-1"></div>
+            <div class="col-lg-4 col-md-8 col-12 col-auto">
+                <div class='input-group mb-2'>
+                    <div class='input-group-prepend'>
+                        <div class='input-group-text'>Title :</div>
+                    </div>
+                    <input type='text' id='txt_Title' name='title' class='form-control' placeholder='Title' required>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class='form-row align-items-center'>
+            <div class="col-lg-4 col-md-8 col-12 col-auto">
+                <div class='input-group mb-2'>
+                    <div class='input-group-prepend'>
+                        <div class='input-group-text'>Genre :</div>
+                    </div>
+                    <input type='text' id='txt_Genre' name='genre' class='form-control' placeholder='Genre'>
+                </div>
+            </div>
+            <div class="col-0 col-lg-1"></div>
+            <div class="col-lg-4 col-md-8 col-12 col-auto">
+                <div class='input-group mb-2'>
+                    <div class='input-group-prepend'>
+                        <div class='input-group-text'>*CopyRight Date :</div>
+                    </div>
+                    <input type='text' id='txt_CopyRightDate' name='copyrightdate' class='form-control' required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Check this checkbox to continue.</div>
+                    <button type='button' class="btn btn-default" id='btn_CopyRightDate'>
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class='form-row div-1'>
+            <div class="col-lg-4 col-md-8 col-12 col-auto">
+                <div class='input-group mb-2'>
+                    <div class='input-group-prepend'>
+                        <div class='input-group-text'>*Producer ID :</div>
+                    </div>
+                    <input type='text' id='txt_ProducerId' name='producerid' class='form-control' placeholder='Producer ID' required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Check this checkbox to continue.</div>
+                    <button type='button' class="btn btn-default btn-sm search_producerid">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class='form-row align-items-center'>
+            <div class="col-lg-4 col-md-8 col-12 col-auto">
+                <div class='input-group mb-2'>
+                    <div class='input-group-prepend'>
+                        <div class='input-group-text'>First Name :</div>
+                    </div>
+                    <input type='text' id='txt_ProducerFirstName' name='pfname' class='form-control' placeholder='Producer First Name' readonly>
+                </div>
+            </div>
+            <div class="col-0 col-lg-1"></div>
+            <div class="col-lg-4 col-md-8 col-12 col-auto">
+                <div class='input-group mb-2'>
+                    <div class='input-group-prepend'>
+                        <div class='input-group-text'>Last Name :</div>
+                    </div>
+                    <input type='text' id='txt_ProducerLastName' name='plname' class='form-control' placeholder='Producer Last Name' readonly>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class='form-row'>
+            <div class="col-lg-4 col-md-8 col-12 col-auto">
+                <div class='input-group mb-2'>
+                    <div class='input-group-prepend'>
+                        <div class='input-group-text'>Price :</div>
+                    </div>
+                    <input type='text' id='txt_Price' name='price' class='form-control' placeholder='Price' required>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+
+
+    List Actor:
+    <div id='div_table' class="table-responsive-sm table-editable">
+        {% block main %}
+        <table id='table_main' class="table table-sm table-fixed table-bordered">
+            <thead>
+                <tr class="d-flex">
+                    <td class="col-1 table-active" align="center"><b>#</b></td>
+                    <th class="col-2 table-active" scope="row" >*Actor ID</th>
+                    <th class="col-3 table-active" scope="row" >Actor First Name</th>
+                    <th class="col-3 table-active" scope="row" >Actor Last Name</th>
+                    <td class="col-1" align="center">
+                        <span class="table-add glyphicon glyphicon-plus"></span>
+                    </td>
+                </tr>
+                <tr class="d-flex hide">
+                    <td class="col-1 order_no table-active" scope="row" align="center"></td>
+                    <td class="col-2 actorid_1" scope="row" align="right">
+                        <span class='actorid'></span>
+                        <button type='button' class="btn btn-default btn-sm search_actorid">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </td>
+                    <td class="col-3 afname table-warning" scope="row"></td>
+                    <td class="col-3 alname table-warning" scope="row"></td>
+                    <td class="col-1" align="center">
+                        <span class="table-remove glyphicon glyphicon-remove"></span>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+
+
+        </table>
+        {% endblock %}
+    </div>
+    </form>
+
+<!-- The Modal -->
+<div class="modal" id="modal_form">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <input type='hidden' id='txt_modal_param' />
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">List Of Value</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body modal-dialog-scrollable">
+            <table id='table_modal' class="table table-sm table-bordered">
+                <thead>
+                    <tr class="d-flex">
+                        <th class='col-1' scope="row">#</th>
+                        <th class='col-3' scope="row"><label id='model_header_1'>Code</label></th>
+                        <th class='col-4' scope="row"><label id='model_header_2'>Name</label></th>
+                        <th class='col-4' scope="row"><label id='model_header_3'>Note</label></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="d-flex">
+                        <td class='col-1'>1</td>
+                        <td class='col-3'><a class='a_click' href='#'></a></td>
+                        <td class='col-4'></td>
+                        <td class='col-4'></td>
+                        <td class='hide'></td>
+                    </tr>
+                    <tr class="d-flex">
+                        <td class='col-1'>2</td>
+                        <td class='col-3'><a class='a_click' href='#'></a></td>
+                        <td class='col-4'></td>
+                        <td class='col-4'></td>
+                        <td class='hide'></td>
+                    </tr>
+                    <tr class="d-flex">
+                        <td class='col-1'>3</td>
+                        <td class='col-3'><a class='a_click' href='#'></a></td>
+                        <td class='col-4'></td>
+                        <td class='col-4'></td>
+                        <td class='hide'></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
