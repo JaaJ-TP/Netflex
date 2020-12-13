@@ -3,6 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render
 from django.http import HttpResponse
+
 from django.shortcuts import get_object_or_404
 from django.views.generic import View
 from django.http import JsonResponse
@@ -12,24 +13,20 @@ from django.utils.decorators import method_decorator
 from django.forms.models import model_to_dict
 from django.db.models import Max
 from django.db import connection
-from rent.models import *
+from movie.models import *
 import json
-
-from datetime import datetime
-from django.db.models.functions import Extract
 
 
 # Create your views here.
 def index(request):
     data = {}
-    return render(request,'rent/rent.html', data)
+    return render(request,'movie/movie.html', data)
 
 class PaymentList(View):
     def get(self, request):
         payments = list(Payment.objects.all().values())
         data = dict()
         data['payments'] = payments
-        print(data)
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
         return response
@@ -39,11 +36,9 @@ class PaymentDetail(View):
         payment = get_object_or_404(Payment, pk=pk)
         data = dict()
         data['payments'] = model_to_dict(payment)
-        print(data)
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
         return response
-
 
 class ActorList(View):
     def get(self, request):
@@ -81,6 +76,23 @@ class ProducerDetail(View):
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
+class SalepersonList(View):
+    def get(self, request):
+        salepersons = list(Saleperson.objects.all().values())
+        data = dict()
+        data['salepersons'] = salepersons
+        response = JsonResponse(data)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
+class SalepersonDetail(View):
+    def get(self, request, pk):
+        saleperson = get_object_or_404(Saleperson, pk=pk)
+        data = dict()
+        data['salepersons'] = model_to_dict(saleperson)
+        response = JsonResponse(data)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
 
 class CustomerList(View):
     def get(self, request):
@@ -109,73 +121,59 @@ class MovieList(View):
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
-class RentList(View):
-    def get(self, request):
-        rents = list(Rent.objects.order_by('receiptno').all().values())
-        data = dict()
-        data['rents'] = rents
-        response = JsonResponse(data)
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
-
-class RentDetail(View):
-    def get(self, request, pk, pk2):
-        receiptno = pk + '/' + pk2
-        rent = list(Rent.objects.select_related("customer").filter(receiptno=receiptno).values('receiptno', 'date','duedate','customerid','customerid__cfname', 'customerid__clname', 'customerid__cphone','customerid__cemail','paymentmethod','paymentref','total'))
-        rentlineitem = list(RentLineItem.objects.select_related('movieid').filter(receiptno=receiptno).order_by('lineitem').values("lineitem", "movieid", "movieid__title", "unitday",'unitprice','extendedprice'))
+class MovieDetail(View):
+    def get(self, request, pk):
+        movieid = pk
+        movie = list(Movie.objects.select_related("producer").filter(movieid=movieid).values('movieid', 'title','genre','copyrightdate','producerid', 'producerid__pfname', 'producerid__plname','price'))
+        movieactor = list(MovieActor.objects.select_related('actorid').filter(movieid=movieid).order_by('lineitem').values("lineitem", "movieid", "actorid", "actorid__afname",'actorid__alname'))
 
         data = dict()
-        data['rent'] = rent[0]
-        data['rentlineitem'] = rentlineitem
+        data['movie'] = movie[0]
+        data['movieactor'] = movieactor
 
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
 
-class RentForm(forms.ModelForm):
+class MovieForm(forms.ModelForm):
     class Meta:
-        model = Rent
+        model = Movie
         fields = '__all__'
 
 
-class RentLineItemForm(forms.ModelForm):
+class MovieActorForm(forms.ModelForm):
     class Meta:
-        model = RentLineItem
+        model = MovieActor
         fields = '__all__'
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class RentCreate(View):
+class MovieCreate(View):
     def post(self, request):
         data = dict()
-        print(data)
         request.POST = request.POST.copy()
-        if Rent.objects.count() != 0:
-            receiptno_max = Rent.objects.aggregate(Max('receiptno'))['receiptno__max']
-            next_receiptno = receiptno_max[0:3] + str(int(receiptno_max[3:7]) + 1)  + "/" + receiptno_max[8:10]
+        if Movie.objects.count() != 0:
+            movieid_max = Movie.objects.aggregate(Max('movieid'))['movieid__max']
+            next_movieid = movieid_max[0:3] + str(int(movieid_max[3:6]) + 1)
         else:
-            next_receiptno = "RCT1000/20"
-        request.POST['receiptno'] = next_receiptno
-        request.POST['date'] = reFormatDateMMDDYYYY(request.POST['date'])
-        request.POST['duedate'] = reFormatDateMMDDYYYY(request.POST['duedate'])
-        request.POST['total'] = reFormatNumber(request.POST['total'])
+            next_movieid = "MOV101"
+        request.POST['movieid'] = next_movieid
+        request.POST['copyrightdate'] = reFormatDateMMDDYYYY(request.POST['copyrightdate'])
+        request.POST['price'] = reFormatNumber(request.POST['price'])
 
-        form = RentForm(request.POST)
+        form = MovieForm(request.POST)
         if form.is_valid():
-            rent = form.save()
+            movie = form.save()
 
             dict_lineitem = json.loads(request.POST['lineitem'])
             for lineitem in dict_lineitem['lineitem']:
-                lineitem['receiptno'] = next_receiptno
-                lineitem['unitday'] = reFormatNumber(lineitem['unitday'])
-                lineitem['unitprice'] = reFormatNumber(lineitem['unitprice'])
-                lineitem['extendedprice'] = reFormatNumber(lineitem['extendedprice'])
+                lineitem['movieid'] = next_movieid
 
-                formlineitem = RentLineItemForm(lineitem)
+                formlineitem = MovieActorForm(lineitem)
                 formlineitem.save()
 
-            data['rent'] = model_to_dict(rent)
+            data['movie'] = model_to_dict(movie)
         else:
             data['error'] = 'form not valid!'
 
@@ -185,35 +183,31 @@ class RentCreate(View):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class RentUpdate(View):
-    def post(self, request, pk, pk2):
-        receiptno = pk + "/" + pk2
+class MovieUpdate(View):
+    def post(self, request, pk):
+        movieid = pk
         data = dict()
-        rent = Rent.objects.get(pk=receiptno)
+        movie = Movie.objects.get(pk=movieid)
         request.POST = request.POST.copy()
-        request.POST['receiptno'] = receiptno
-        request.POST['date'] = reFormatDateMMDDYYYY(request.POST['date'])
-        request.POST['duedate'] = reFormatDateMMDDYYYY(request.POST['duedate'])
-        request.POST['total'] = reFormatNumber(request.POST['total'])
+        request.POST['movieid'] = movieid
+        request.POST['copyrightdate'] = reFormatDateMMDDYYYY(request.POST['copyrightdate'])
+        request.POST['price'] = reFormatNumber(request.POST['price'])
 
-        form = RentForm(instance=rent, data=request.POST)
+        form = MovieForm(instance=movie, data=request.POST)
         if form.is_valid():
-            rent = form.save()
+            movie = form.save()
 
-            RentLineItem.objects.filter(receiptno=receiptno).delete()
+            MovieActor.objects.filter(movieid=movieid).delete()
 
             dict_lineitem = json.loads(request.POST['lineitem'])
             for lineitem in dict_lineitem['lineitem']:
-                lineitem['receiptno'] = receiptno
+                lineitem['movieid'] = movieid
                 lineitem['lineitem'] = lineitem['lineitem']
-                lineitem['movieid'] = lineitem['movieid']
-                lineitem['unitday'] = reFormatNumber(lineitem['unitday'])
-                lineitem['unitprice'] = reFormatNumber(lineitem['unitprice'])
-                lineitem['extendedprice'] = reFormatNumber(lineitem['extendedprice'])
-                formlineitem = RentLineItemForm(lineitem)
+                lineitem['actorid'] = lineitem['actorid']
+                formlineitem = MovieActorForm(lineitem)
                 formlineitem.save()
 
-            data['rent'] = model_to_dict(rent)
+            data['movie'] = model_to_dict(movie)
         else:
             data['error'] = 'form not valid!'
 
@@ -223,42 +217,41 @@ class RentUpdate(View):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class RentDelete(View):
-    def post(self, request, pk, pk2):
-        receiptno = pk + "/" + pk2
+class MovieDelete(View):
+    def post(self, request, pk):
+        movieid = pk
         data = dict()
-        rent = Rent.objects.get(pk=receiptno)
-        if rent:
-            rent.delete()
-            data['message'] = "Rent Deleted!"
+        movie = Movie.objects.get(pk=movieid)
+        if movie:
+            movie.delete()
+            data['message'] = "Movie Deleted!"
         else:
             data['message'] = "Error!"
 
         return JsonResponse(data)
 
 
-class RentPDF(View):
-    def get(self, request, pk, pk2):
-        receiptno = pk + "/" + pk2
-        rent = list(Rent.objects.select_related("customer").filter(receiptno=receiptno).values('receiptno', 'date','duedate','customerid','customerid__cfname', 'customerid__clname', 'customerid__cphone','customerid__cemail','paymentmethod','paymentref','total'))
-        rentlineitem = list(RentLineItem.objects.select_related('movieid').filter(receiptno=receiptno).order_by('lineitem').values("lineitem", "movieid", "movieid__title", "unitday",'unitprice','extendedprice'))
+class MoviePDF(View):
+    def get(self, request, pk):
+        movieid = pk
+        movie = list(Movie.objects.select_related("producer").filter(movieid=movieid).values('movieid', 'title','genre','copyrightdate','producerid', 'producerid__pfname', 'producerid__plname','price'))
+        movieactor = list(MovieActor.objects.select_related('actorid').filter(movieid=movieid).order_by('lineitem').values("lineitem", "movieid", "actorid", "actorid__afname",'actorid__alname'))
         data = dict()
-        data['rent'] = rent[0]
-        data['rentlineitem'] = rentlineitem
+        data['movie'] = movie[0]
+        data['movieactor'] = movieactor
         # return JsonResponse(data)
-        return render(request, 'rent/pdf.html', data)
+        return render(request, 'movie/pdf.html', data)
 
 
-class RentReport(View):
+class MovieReport(View):
     def get(self, request):
         with connection.cursor() as cursor:
-            cursor.execute(
-                'SELECT r.receiptno as "Receipt No",r.date as "Rent Date",r.duedate as "Return Date",r.customerid as "Customer ID"'
-                ',c.cfname as "Customer First Name",c.clname as "Customer Last Name",c.cphone as "Phone",c.cemail as "Email",'
-                'r.paymentmethod as "Payment Method",r.paymentref as "Payment Reference",r.total as "Total"'
-                'FROM rent as r JOIN customer as c'
-                ' ON r.customerid = c.customerid'
-                ' ORDER BY r.receiptno')
+            cursor.execute('SELECT m.movieid as "Movie ID", m.title as "Title", m.genre as "Genre", m.copyrightdate as "CopyRight Date"'
+                           ' , m.producerid as "Producer Id", p.pfname as "Producer First Name", p.plname as "Producer Last Name"'
+                           ' , m.price as "Price" '
+                           ' FROM movie as m JOIN producer as p '
+                           ' ON m.producerid = p.producerid '
+                           ' ORDER BY m.movieid ')
 
             row = dictfetchall(cursor)
             column_name = [col[0] for col in cursor.description]
@@ -268,13 +261,7 @@ class RentReport(View):
         data['column_name'] = column_name
 
         # return JsonResponse(data)
-        return render(request, 'rent/report.html', data)
-
-# # def diffdate(str):
-# def diffdate(str):
-#     start = datetime(Rent.date)
-#     end = datetime(Rent.duedate)
-#     Rent.objects.create(start_datetime = start,start_date = start.date(),end_datetime = end, end)
+        return render(request, 'movie/report.html', data)
 
 
 def dictfetchall(cursor):

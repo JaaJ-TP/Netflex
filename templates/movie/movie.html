@@ -11,11 +11,11 @@
 
     <div style="font-size:0;" class="bg-secondary">
         <input type='image' id='btnNew' src="{% static 'images/newOn.gif' %}"  alt="newOn">
-        <input type='image' id='btnEdit' src="{% static 'images/editOn.gif' %}"  alt="editOn">
-        <input type='image' id='btnSave' src="{% static 'images/saveOn.gif' %}"  alt="saveOn">
+        <input type='image' id='btnEdit' src="{% static 'images/search.png' %}" height="42px" alt="search">
+        <!-- <input type='image' id='btnSave' src="{% static 'images/saveOn.gif' %}"  alt="saveOn">
         <input type='image' id='btnDelete' src="{% static 'images/deleteOn.gif' %}"  alt="deleteOn">
         <input type='image' id='btnPdf' src="{% static 'images/pdfOn.gif' %}"  alt="pdfOn">
-        <input type='image' id='btnPrint' src="{% static 'images/printOn.gif' %}"  alt="printOn">
+        <input type='image' id='btnPrint' src="{% static 'images/printOn.gif' %}"  alt="printOn"> -->
     </div>
     <br />
     <form id='form_movie' action='/'>
@@ -36,7 +36,7 @@
                     <div class='input-group-prepend'>
                         <div class='input-group-text'>Title :</div>
                     </div>
-                    <input type='text' id='txt_Title' name='title' class='form-control' placeholder='Title' required>
+                    <input type='text' id='txt_Title' name='title' class='form-control' placeholder='Title' readonly>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
                     <div class='input-group-prepend'>
                         <div class='input-group-text'>Genre :</div>
                     </div>
-                    <input type='text' id='txt_Genre' name='genre' class='form-control' placeholder='Genre'>
+                    <input type='text' id='txt_Genre' name='genre' class='form-control' placeholder='Genre' readonly>
                 </div>
             </div>
             <div class="col-0 col-lg-1"></div>
@@ -56,12 +56,12 @@
                     <div class='input-group-prepend'>
                         <div class='input-group-text'>*CopyRight Date :</div>
                     </div>
-                    <input type='text' id='txt_CopyRightDate' name='copyrightdate' class='form-control' required>
+                    <input type='text' id='txt_CopyRightDate' name='copyrightdate' class='form-control' readonly>
                     <div class="valid-feedback">Valid.</div>
                     <div class="invalid-feedback">Check this checkbox to continue.</div>
-                    <button type='button' class="btn btn-default" id='btn_CopyRightDate'>
+                    <!-- <button type='button' class="btn btn-default" id='btn_CopyRightDate'>
                         <span class="glyphicon glyphicon-calendar"></span>
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -72,12 +72,12 @@
                     <div class='input-group-prepend'>
                         <div class='input-group-text'>*Producer ID :</div>
                     </div>
-                    <input type='text' id='txt_ProducerId' name='producerid' class='form-control' placeholder='Producer ID' required>
+                    <input type='text' id='txt_ProducerId' name='producerid' class='form-control' placeholder='Producer ID' readonly>
                     <div class="valid-feedback">Valid.</div>
                     <div class="invalid-feedback">Check this checkbox to continue.</div>
-                    <button type='button' class="btn btn-default btn-sm search_producerid">
+                    <!-- <button type='button' class="btn btn-default btn-sm search_producerid">
                         <span class="glyphicon glyphicon-search"></span>
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -108,7 +108,7 @@
                     <div class='input-group-prepend'>
                         <div class='input-group-text'>Price :</div>
                     </div>
-                    <input type='text' id='txt_Price' name='price' class='form-control' placeholder='Price' required>
+                    <input type='text' id='txt_Price' name='price' class='form-control' placeholder='Price' readonly>
                 </div>
             </div>
         </div>
@@ -126,22 +126,22 @@
                     <th class="col-2 table-active" scope="row" >*Actor ID</th>
                     <th class="col-3 table-active" scope="row" >Actor First Name</th>
                     <th class="col-3 table-active" scope="row" >Actor Last Name</th>
-                    <td class="col-1" align="center">
-                        <span class="table-add glyphicon glyphicon-plus"></span>
+                    <td class="col-0" align="center">
+                        <span class="table-add glyphicon glyphicon-pluss"></span>
                     </td>
                 </tr>
                 <tr class="d-flex hide">
                     <td class="col-1 order_no table-active" scope="row" align="center"></td>
-                    <td class="col-2 actorid_1" scope="row" align="right">
-                        <span class='actorid'></span>
+                    <td class="col-2 actorid_1 table-warning" scope="row">
+                        <!-- <span class='actorid'></span>
                         <button type='button' class="btn btn-default btn-sm search_actorid">
                             <span class="glyphicon glyphicon-search"></span>
-                        </button>
+                        </button> -->
                     </td>
                     <td class="col-3 afname table-warning" scope="row"></td>
                     <td class="col-3 alname table-warning" scope="row"></td>
-                    <td class="col-1" align="center">
-                        <span class="table-remove glyphicon glyphicon-remove"></span>
+                    <td class="col-0" align="center">
+                        <span class="table-remove glyphicon glyphicon-removee"></span>
                     </td>
                 </tr>
             </thead>

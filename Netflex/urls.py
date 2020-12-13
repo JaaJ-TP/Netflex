@@ -16,14 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-# from movie import views as movie_views
+from movie import views as movie_views
 from rent import views as rent_views
 from report import views as report_views
 from customer import views as customer_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('', movie_views.index, name='index'),
+    path('', movie_views.index, name='index'),
     path('', rent_views.index, name='index'),
 
     path('report', report_views.index, name='index'),
@@ -31,22 +31,22 @@ urlpatterns = [
     path('report/ReportListAllRents', report_views.ReportListAllRents),
     path('report/ReportListAllCustomer', report_views.ReportListAllCustomer),
 
-    # path('movie', movie_views.index, name='index'),
-    # path('actor/list', movie_views.ActorList.as_view(), name='actor_list'),
-    # path('actor/detail/<str:pk>', movie_views.ActorDetail.as_view(), name='actor_detail'),
-    # path('producer/list', movie_views.ProducerList.as_view(), name='producer_list'),
-    # path('producer/detail/<str:pk>', movie_views.ProducerDetail.as_view(), name='producer_detail'),
-    # path('saleperson/list', movie_views.SalepersonList.as_view(), name='saleperson_list'),
-    # path('saleperson/detail/<str:pk>', movie_views.SalepersonDetail.as_view(), name='saleperson_detail'),
-    # path('customer/list', movie_views.CustomerList.as_view(), name='customer_list'),
-    # path('customer/detail/<str:pk>', movie_views.CustomerDetail.as_view(), name='customer_detail'),
-    # path('movie/list', movie_views.MovieList.as_view(), name='movie_list'),
-    # path('movie/detail/<str:pk>', movie_views.MovieDetail.as_view(), name='movie_detail'),
-    # path('movie/create', movie_views.MovieCreate.as_view(), name='movie_create'),
-    # path('movie/update/<str:pk>', movie_views.MovieUpdate.as_view(), name='movie_update'),
-    # path('movie/delete/<str:pk>', movie_views.MovieDelete.as_view(), name='movie_delete'),
-    # path('movie/pdf/<str:pk>', movie_views.MoviePDF.as_view(), name='movie_pdf'),
-    # path('movie/report', movie_views.MovieReport.as_view(), name='movie_report'),
+    path('movie', movie_views.index, name='index'),
+    path('actor/list', movie_views.ActorList.as_view(), name='actor_list'),
+    path('actor/detail/<str:pk>', movie_views.ActorDetail.as_view(), name='actor_detail'),
+    path('producer/list', movie_views.ProducerList.as_view(), name='producer_list'),
+    path('producer/detail/<str:pk>', movie_views.ProducerDetail.as_view(), name='producer_detail'),
+    path('saleperson/list', movie_views.SalepersonList.as_view(), name='saleperson_list'),
+    path('saleperson/detail/<str:pk>', movie_views.SalepersonDetail.as_view(), name='saleperson_detail'),
+    path('customer/list', movie_views.CustomerList.as_view(), name='customer_list'),
+    path('customer/detail/<str:pk>', movie_views.CustomerDetail.as_view(), name='customer_detail'),
+    path('movie/list', movie_views.MovieList.as_view(), name='movie_list'),
+    path('movie/detail/<str:pk>', movie_views.MovieDetail.as_view(), name='movie_detail'),
+    path('movie/create', movie_views.MovieCreate.as_view(), name='movie_create'),
+    path('movie/update/<str:pk>', movie_views.MovieUpdate.as_view(), name='movie_update'),
+    path('movie/delete/<str:pk>', movie_views.MovieDelete.as_view(), name='movie_delete'),
+    path('movie/pdf/<str:pk>', movie_views.MoviePDF.as_view(), name='movie_pdf'),
+    path('movie/report', movie_views.MovieReport.as_view(), name='movie_report'),
 
     path('rent', rent_views.index, name='index'),
     path('movie/list', rent_views.MovieList.as_view(), name='movie_list'),
