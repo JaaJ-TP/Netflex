@@ -48,6 +48,8 @@ urlpatterns = [
     path('movie/report', movie_views.MovieReport.as_view(), name='movie_report'),
 
     path('rent', rent_views.index, name='index'),
+    path('payment/list', rent_views.PaymentList.as_view(), name='payment_list'),
+    path('payment/detail/<pk>', rent_views.PaymentDetail.as_view(), name='payment_detail'),
     path('movie/list', rent_views.MovieList.as_view(), name='movie_list'),
     path('rent/list', rent_views.RentList.as_view(), name='rent_list'),
     path('rent/detail/<str:pk>/<str:pk2>', rent_views.RentDetail.as_view(), name='rent_detail'),

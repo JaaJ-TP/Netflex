@@ -22,6 +22,24 @@ def index(request):
     data = {}
     return render(request,'rent/rent.html', data)
 
+class PaymentList(View):
+    def get(self, request):
+        payments = list(Payment.objects.all().values())
+        data = dict()
+        data['payments'] = payments
+        response = JsonResponse(data)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
+class PaymentDetail(View):
+    def get(self, request, pk):
+        payment = get_object_or_404(Payment, pk=pk)
+        data = dict()
+        data['payments'] = model_to_dict(payment)
+        print(data)
+        response = JsonResponse(data)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
 
 class ActorList(View):
     def get(self, request):
@@ -82,6 +100,7 @@ class CustomerList(View):
         customers = list(Customer.objects.all().values())
         data = dict()
         data['customers'] = customers
+        print(data)
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
         return response
@@ -91,6 +110,7 @@ class CustomerDetail(View):
         customer = get_object_or_404(Customer, pk=pk)
         data = dict()
         data['customers'] = model_to_dict(customer)
+        print(data)
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
         return response

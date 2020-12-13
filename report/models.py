@@ -15,6 +15,13 @@ class Actor(models.Model):
         db_table = "actor"
         managed = False
 
+class Payment(models.Model):
+    payment_code = models.CharField(max_length=10,primary_key=True)
+    name = models.CharField(max_length=100)
+    class Meta:
+        db_table = "payment"
+        managed = False
+
 class Producer(models.Model):
     producerid = models.CharField(max_length=10, primary_key=True)
     pfname = models.CharField(max_length=100, null=True)

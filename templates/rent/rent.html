@@ -10,12 +10,13 @@
 {% block content %}
 
     <div style="font-size:0;" class="bg-secondary">
-        <input type='image' id='btnNew' src="{% static 'images/newOn.gif' %}"  alt="newOn">
-        <input type='image' id='btnEdit' src="{% static 'images/editOn.gif' %}"  alt="editOn">
+        <input type='image' id='btnNew' src="{% static 'images/newOn.gif' %}"  alt="newOn">  
+        <input type='image' id='btnEdit' src="{% static 'images/รายการหนังที่เช่า.jpg' %}" width="" height="42"  alt="รายการหนังที่เช่า">
+        <input type='image' id='btnPdf' src="{% static 'images/Bill.jpg' %}" width="" height="42" alt="Bill">
         <input type='image' id='btnSave' src="{% static 'images/saveOn.gif' %}"  alt="saveOn">
-        <input type='image' id='btnDelete' src="{% static 'images/deleteOn.gif' %}"  alt="deleteOn">
-        <input type='image' id='btnPdf' src="{% static 'images/pdfOn.gif' %}"  alt="pdfOn">
-        <input type='image' id='btnPrint' src="{% static 'images/printOn.gif' %}"  alt="printOn">
+        <!-- <input type='image' id='btnDelete' src="{% static 'images/deleteOn.gif' %}"  alt="deleteOn"> -->
+        
+        <!-- <input type='image' id='btnPrint' src="{% static 'images/printOn.gif' %}"  alt="printOn"> -->
     </div>
     <br />
     <form id='form_rent' action='/'>
@@ -105,20 +106,14 @@
             <div class="col-lg-4 col-md-8 col-12 col-auto">
                 <div class='input-group mb-2'>
                     <div class='input-group-prepend'>
-                        <div class='input-group-text'>*Saleperson First Name :</div>
+                        <div class='input-group-text'>*Payment Method :</div>
                     </div>
-                    <input type='text' id='txt_SalepersonFirstName' name='salefname' class='form-control' placeholder='Saleperson First Name' required>
-                    <button type='button' class="btn btn-default btn-sm search_userid">
+                    <input type='text' id='txt_PaymentCode' name='payment_code' class='form-control' placeholder='Payment Code' required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Check this checkbox to continue.</div>
+                    <button type='button' class="btn btn-default btn-sm search_payment_code">
                         <span class="glyphicon glyphicon-search"></span>
                     </button>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-6 offset-md-1 col-auto">
-                <div class='input-group mb-2'>
-                    <div class='input-group-prepend'>
-                        <div class='input-group-text'>Saleperson Last Name :</div>
-                    </div>
-                    <input type='text' id='txt_SalepersonLastName' name='salelname' class='form-control' placeholder='Saleperson Last Name' readonly>
                 </div>
             </div>
         </div>

@@ -45,11 +45,10 @@ CREATE TABLE rent (
 	date date,
 	duedate date,
 	customerid character varying(10),
-    salefname character varying(100),
-    salelname character varying(100),
+    paymentmethod character varying(100),
     paymentref character varying(100),
     total numeric(18,2),
-    PRIMARY KEY (receiptNo),
+    PRIMARY KEY (receiptno),
 	CONSTRAINT rent_customer_customerid_fkey FOREIGN KEY (customerid)
         REFERENCES customer (customerid) MATCH SIMPLE,
 	    ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -80,4 +79,10 @@ CREATE TABLE movie_actor
         REFERENCES actor (actorId) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
+);
+
+CREATE TABLE payment (
+    payment_code character varying(10), 
+    name character varying(100), 
+    PRIMARY KEY (payment_code)
 );

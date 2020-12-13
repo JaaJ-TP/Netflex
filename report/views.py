@@ -34,7 +34,7 @@ def ReportListAllRents(request):
     with connection.cursor() as cursor:
         cursor.execute('SELECT r.receiptno as "Receipt No",r.date as "Rent Date",r.duedate as "Return Date",r.customerid as "Customer ID"'
                         ',c.cfname as "Customer First Name",c.clname as "Customer Last Name",c.cphone as "Phone",c.cemail as "Email",'
-                        ' r.salefname as "Sale First Name",r.salelname as "Sale Last Name"'
+                        ' r.paymentmethod as "Payment Method"'
                         ',r.paymentref as "Payment Reference",r.total as "Total"'
                         'FROM rent as r JOIN customer as c'
                         ' ON r.customerid = c.customerid'
