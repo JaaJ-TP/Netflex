@@ -21,15 +21,16 @@ from rent import views as rent_views
 from report import views as report_views
 from customer import views as customer_views
 
+
 from accounts.views import login_view, register_view, logout_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', movie_views.index, name='index'),
-    
     path('accounts/login/', login_view),
     path('accounts/register/', register_view),
     path('accounts/logout/', logout_view),
+
+
 
 
     path('report', report_views.index, name='index'),

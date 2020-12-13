@@ -9,7 +9,7 @@ from django.contrib.auth import (
     login,
     logout
 )
-from .models import *
+
 from .forms import UserLoginForm, UserRegisterForm
 
 
@@ -23,7 +23,7 @@ def login_view(request):
         login(request, user)
         if next:
             return redirect(next)
-        return redirect('/customer')
+        return redirect('/rent')
 
     context = {
         'form': form,
@@ -43,7 +43,7 @@ def register_view(request):
         login(request, new_user)
         if next:
             return redirect(next)
-        return redirect('/')
+        return redirect('/accounts/login')
 
     context = {
         'form': form,
@@ -53,4 +53,4 @@ def register_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('/')
+    return redirect('/movie')
