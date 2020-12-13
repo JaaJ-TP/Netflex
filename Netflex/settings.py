@@ -81,9 +81,9 @@ WSGI_APPLICATION = 'Netflex.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Netflex',
+        'NAME': 'netflex',
         'USER': 'postgres',
-        'PASSWORD': 'Ja.02082542',
+        'PASSWORD': '089685Wg.',
         'HOST': 'localhost',
         'PORT': '',
     }
