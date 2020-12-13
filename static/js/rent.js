@@ -46,6 +46,23 @@ $(document).ready( function () {
         re_order_no();
     });
 
+    $('#txt_PaymentCode').change (function () {
+        var payment_code = $(this).val().trim();
+
+        $.ajax({
+            url:  '/payment/detail/' + payment_code,
+            type:  'get',
+            dataType:  'json',
+            success: function  (data) {
+                $('#txt_PaymentCode').val(data.payments.payment_code);
+                $('#txt_PaymentMethod').val(data.payments.name);
+            },
+            error: function (xhr, status, error) {
+                $('#txt_paymentMethod').val('');
+            }
+        });
+    });    
+
     $('#txt_CustomerID').change (function () {
         var customerid = $(this).val().trim();
         $.ajax({
@@ -64,29 +81,44 @@ $(document).ready( function () {
                 $('#txt_CustomerLastName').val('');
                 $('#txt_CustomerPhone').val('');
                 $('#txt_CustomerEmail').val('');
-            }
-        });
-    });
-
-    $('#txt_SalepersonID').change (function () {
-        var userid = $(this).val().trim();
-        $.ajax({
-            url:  '/saleperson/detail/' + userid,
-            type:  'get',
-            dataType:  'json',
-            success: function  (data) {
-                $('#txt_SalepersonID').val(data.salepersons.userid);
-                $('#txt_SalepersonFirstName').val(data.salepersons.sfname);
-                $('#txt_SalepersonLastName').val(data.salepersons.slname);
-            },
-            error: function (xhr, status, error) {
-                $('#txt_SalepersonFirstName').val('');
-                $('#txt_SalepersonLastName').val('');
+                console.log
             }
         });
     });
 
     /* search Movie ID  */
+    $('.search_payment_code').click(function () {
+        console.log('Click payment')
+        $.ajax({
+            url:  '/payment/list',
+            type:  'get',
+            dataType:  'json',
+            success: function  (data) {
+                let rows =  '';
+                var i = 1;
+                data.payments.forEach(payment => {
+                    rows += `
+                    <tr class="d-flex">
+                        <td class='col-1'>${i++}</td>
+                        <td class='col-3'><a class='a_click' href='#'>${payment.payment_code}</a></td>
+                        <td class='col-5'>${payment.name}</td>
+                        <td class='col-3'></td>
+                        <td class='hide'></td>
+                    </tr>`;
+                });
+                $('#table_modal > tbody').html(rows);
+
+                $('#model_header_1').text('Payment Code');
+                $('#model_header_2').text('Payment Method');
+                $('#model_header_3').text('Note');
+                console.log()
+            },
+        });
+        // open popup
+        $('#txt_modal_param').val('payment_code');
+        $('#modal_form').modal();
+    });
+
     $('.search_movieid').click(function () {
         console.log("Click")
         $p_code = $(this).parents('td').children('span').html();
@@ -153,37 +185,37 @@ $(document).ready( function () {
         $('#modal_form').modal();
     });
 
-    $('.search_userid').click(function () {
-        console.log('Click saleperson')
-        $.ajax({
-            url:  '/saleperson/list',
-            type:  'get',
-            dataType:  'json',
-            success: function  (data) {
-                let rows =  '';
-                var i = 1;
-                data.salepersons.forEach(saleperson => {
-                    rows += `
-                    <tr class="d-flex">
-                        <td class='col-1'>${i++}</td>
-                        <td class='col-3'><a class='a_click' href='#'>${saleperson.userid}</a></td>
-                        <td class='col-5'>${saleperson.sfname}</td>
-                        <td class='col-3'>${saleperson.slname}</td>
-                        <td class='hide'></td>
-                    </tr>`;
-                });
-                $('#table_modal > tbody').html(rows);
+    // $('.search_userid').click(function () {
+    //     console.log('Click saleperson')
+    //     $.ajax({
+    //         url:  '/saleperson/list',
+    //         type:  'get',
+    //         dataType:  'json',
+    //         success: function  (data) {
+    //             let rows =  '';
+    //             var i = 1;
+    //             data.salepersons.forEach(saleperson => {
+    //                 rows += `
+    //                 <tr class="d-flex">
+    //                     <td class='col-1'>${i++}</td>
+    //                     <td class='col-3'><a class='a_click' href='#'>${saleperson.userid}</a></td>
+    //                     <td class='col-5'>${saleperson.sfname}</td>
+    //                     <td class='col-3'>${saleperson.slname}</td>
+    //                     <td class='hide'></td>
+    //                 </tr>`;
+    //             });
+    //             $('#table_modal > tbody').html(rows);
 
-                $('#model_header_1').text('Saleperson ID');
-                $('#model_header_2').text('Saleperson First Name');
-                $('#model_header_3').text('Saleperson Last Name');
+    //             $('#model_header_1').text('Saleperson ID');
+    //             $('#model_header_2').text('Saleperson First Name');
+    //             $('#model_header_3').text('Saleperson Last Name');
 
-            },
-        });
-        // open popup
-        $('#txt_modal_param').val('userid');
-        $('#modal_form').modal();
-    });
+    //         },
+    //     });
+    //     // open popup
+    //     $('#txt_modal_param').val('userid');
+    //     $('#modal_form').modal();
+    // });
 
     $('table').on('focusin', 'td[contenteditable]', function() {
         $(this).data('val', $(this).html());
@@ -225,10 +257,9 @@ $(document).ready( function () {
             });
 
             re_calculate_total();
-        } else if ($('#txt_modal_param').val() == 'userid') {
-            $('#txt_SalepersonID').val(code);
-            $('#txt_SalepersonFirstName').val(name);
-            $('#txt_SalepersonLastName').val(note);
+        } else if ($('#txt_modal_param').val() == 'payment_code') {
+            $('#txt_PaymentCode').val(code);
+            $('#txt_PaymentMethod').val(name);
         } else if ($('#txt_modal_param').val() == 'customerid') {
             $('#txt_CustomerID').val(code);
             $('#txt_CustomerFirstName').val(name);
@@ -240,8 +271,8 @@ $(document).ready( function () {
             $('#txt_Date').val(name);
             $('#txt_CustomerID').val(note);
             $('#txt_CustomerID').change();
-            $('#txt_SalepersonFirstName').val(option);
-            $('#txt_SalepersonLastName').val(option1);
+            // $('#txt_SalepersonFirstName').val(option);
+            // $('#txt_SalepersonLastName').val(option1);
 
             get_rent_detail(code);
         }
@@ -308,10 +339,10 @@ $(document).ready( function () {
             $('#txt_CustomerID').focus();
             return false;
         }
-        var userid = $('#txt_SalepersonFirstName').val().trim();
-        if (userid == '') {
-            alert('กรุณาระบุ Saleperson');
-            $('#txt_SalepersonID').focus();
+        var payment_code = $('#txt_PaymentMethod').val().trim();
+        if (payment_code == '') {
+            alert('กรุณาระบุ Payment');
+            $('#txt_PaymentCode').focus();
             return false;
         }
         var rent_duedate = $('#txt_ReturnDate').val().trim();
@@ -422,8 +453,8 @@ function get_rent_detail (receiptno) {
         success: function  (data) {
             reset_table();
             //console.log(data.rentlineitem.length);
-            $("#txt_SalepersonFirstName").val(data.rent.salefname)
-            $("#txt_SalepersonLastName").val(data.rent.salefname)
+            $("#txt_PaymentMethod").val(data.rent.payment_code__name)
+            $("#txt_PaymentCode").val(data.rent.payment_code)
             $("#txt_PaymentReference").val(data.rent.paymentref)
 
 
@@ -481,9 +512,7 @@ function reset_form() {
     $('#txt_CustomerPhone').val('');
     $('#txt_CustomerEmail').val('');
 
-    $('#txt_SalepersonFirstName').val('');
-    $('#txt_SalepersonLastName').val('');
-
+    $('#txt_PaymentMethod').val('');
     $('#txt_PaymentReference').val('');
 
     $('#lbl_Total').val('0.00');
@@ -543,5 +572,3 @@ function isFloat(n){
 var dateRegex = /^(?=\d)(?:(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:\x20|$))|(?:2[0-8]|1\d|0?[1-9]))([-.\/])(?:1[012]|0?[1-9])\1(?:1[6-9]|[2-9]\d)?\d\d(?:(?=\x20\d)\x20|$))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\x20[AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/;
 //var numberRegex = /^-?\d+\.?\d*$/;
 var numberRegex = /^-?\d*\.?\d*$/
-
-

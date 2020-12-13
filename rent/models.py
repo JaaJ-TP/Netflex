@@ -4,6 +4,17 @@ from django.db import models
 
 # Create your models here.
 
+class Payment(models.Model):
+    payment_code = models.CharField(max_length=10, primary_key=True)
+    name = models.CharField(max_length=100, null=True)
+
+    class Meta:
+        db_table = "payment"
+        managed = False
+
+    def __str__(self):
+        return self.payment_code
+
 class Actor(models.Model):
     actorid = models.CharField(max_length=10, primary_key=True)
     afname = models.CharField(max_length=100, null=True)
@@ -73,8 +84,7 @@ class Rent(models.Model):
     date = models.DateField(null=True)
     duedate = models.DateField(null=True)
     customerid = models.ForeignKey(Customer, on_delete=models.CASCADE, db_column='customerid')
-    salefname = models.CharField(max_length=100, null=True)
-    salelname = models.CharField(max_length=100, null=True)
+    paymentmethod = models.CharField(max_length=100, null=True)
     paymentref = models.CharField(max_length=100, null=True)
     total = models.FloatField(null=True, blank=True)
     class Meta:
@@ -88,6 +98,7 @@ class RentLineItem(models.Model):
     unitday = models.IntegerField(null=True)
     unitprice = models.FloatField(null=True)
     extendedprice = models.FloatField(null=True)
+
 
     class Meta:
         db_table = "rent_line_item"

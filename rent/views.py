@@ -16,11 +16,34 @@ from django.db import connection
 from rent.models import *
 import json
 
+from datetime import datetime
+from django.db.models.functions import Extract
+
 
 # Create your views here.
 def index(request):
     data = {}
     return render(request,'rent/rent.html', data)
+
+class PaymentList(View):
+    def get(self, request):
+        payments = list(Payment.objects.all().values())
+        data = dict()
+        data['payments'] = payments
+        print(data)
+        response = JsonResponse(data)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
+class PaymentDetail(View):
+    def get(self, request, pk):
+        payment = get_object_or_404(Payment, pk=pk)
+        data = dict()
+        data['payments'] = model_to_dict(payment)
+        print(data)
+        response = JsonResponse(data)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
 
 
 class ActorList(View):
@@ -59,23 +82,6 @@ class ProducerDetail(View):
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
-class SalepersonList(View):
-    def get(self, request):
-        salepersons = list(Saleperson.objects.all().values())
-        data = dict()
-        data['salepersons'] = salepersons
-        response = JsonResponse(data)
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
-
-class SalepersonDetail(View):
-    def get(self, request, pk):
-        saleperson = get_object_or_404(Saleperson, pk=pk)
-        data = dict()
-        data['salepersons'] = model_to_dict(saleperson)
-        response = JsonResponse(data)
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
 
 class CustomerList(View):
     def get(self, request):
@@ -116,7 +122,7 @@ class RentList(View):
 class RentDetail(View):
     def get(self, request, pk, pk2):
         receiptno = pk + '/' + pk2
-        rent = list(Rent.objects.select_related("customer").filter(receiptno=receiptno).values('receiptno', 'date','duedate','customerid','customerid__cfname', 'customerid__clname', 'customerid__cphone','customerid__cemail','salefname','salelname','paymentref','total'))
+        rent = list(Rent.objects.select_related("customer").filter(receiptno=receiptno).values('receiptno', 'date','duedate','customerid','customerid__cfname', 'customerid__clname', 'customerid__cphone','customerid__cemail','paymentmethod','paymentref','total'))
         rentlineitem = list(RentLineItem.objects.select_related('movieid').filter(receiptno=receiptno).order_by('lineitem').values("lineitem", "movieid", "movieid__title", "unitday",'unitprice','extendedprice'))
 
         data = dict()
@@ -235,7 +241,7 @@ class RentDelete(View):
 class RentPDF(View):
     def get(self, request, pk, pk2):
         receiptno = pk + "/" + pk2
-        rent = list(Rent.objects.select_related("customer").filter(receiptno=receiptno).values('receiptno', 'date','duedate','customerid','customerid__cfname', 'customerid__clname', 'customerid__cphone','customerid__cemail','salefname','salelname','paymentref','total'))
+        rent = list(Rent.objects.select_related("customer").filter(receiptno=receiptno).values('receiptno', 'date','duedate','customerid','customerid__cfname', 'customerid__clname', 'customerid__cphone','customerid__cemail','paymentmethod','paymentref','total'))
         rentlineitem = list(RentLineItem.objects.select_related('movieid').filter(receiptno=receiptno).order_by('lineitem').values("lineitem", "movieid", "movieid__title", "unitday",'unitprice','extendedprice'))
         data = dict()
         data['rent'] = rent[0]
@@ -250,8 +256,7 @@ class RentReport(View):
             cursor.execute(
                 'SELECT r.receiptno as "Receipt No",r.date as "Rent Date",r.duedate as "Return Date",r.customerid as "Customer ID"'
                 ',c.cfname as "Customer First Name",c.clname as "Customer Last Name",c.cphone as "Phone",c.cemail as "Email",'
-                ' r.salefname as "Sale First Name",r.salelname as "Sale Last Name"'
-                ',r.paymentref as "Payment Reference",r.total as "Total"'
+                'r.paymentmethod as "Payment Method",r.paymentref as "Payment Reference",r.total as "Total"'
                 'FROM rent as r JOIN customer as c'
                 ' ON r.customerid = c.customerid'
                 ' ORDER BY r.receiptno')
@@ -265,6 +270,8 @@ class RentReport(View):
 
         # return JsonResponse(data)
         return render(request, 'rent/report.html', data)
+
+# def diffdate(str):
 
 
 def dictfetchall(cursor):

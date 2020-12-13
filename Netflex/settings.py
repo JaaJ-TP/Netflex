@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'movie',
     'rent',
     'customer',
     'report',
@@ -81,9 +80,9 @@ WSGI_APPLICATION = 'Netflex.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Netflex',
+        'NAME': 'netflex',
         'USER': 'postgres',
-        'PASSWORD': 'Ja.02082542',
+        'PASSWORD': 'titirat31',
         'HOST': 'localhost',
         'PORT': '',
     }

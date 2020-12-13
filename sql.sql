@@ -81,3 +81,9 @@ CREATE TABLE movie_actor
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
+
+CREATE TABLE payment (
+    payment_code character varying(10), 
+    name character varying(100), 
+    PRIMARY KEY (payment_code)
+);
