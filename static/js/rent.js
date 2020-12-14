@@ -246,12 +246,13 @@ $(document).ready( function () {
         var note = $(this).parents('tr').find('td:nth-child(4)').html();
         var option = $(this).parents('tr').find('td:nth-child(5)').html();
         var option1 = $(this).parents('tr').find('td:nth-child(6)').html();
+        var option2 = $(this).parents('tr').find('td:nth-child(7)').html();
         if ($('#txt_modal_param').val() == 'movieid') {
             $("#table_main tbody tr").each(function() {
                 if ($(this).find('.order_no').html() == '*') {
                     $(this).find('.movieid_1 > span').html(code);
                     $(this).find('.title').html(name);
-                    $(this).find('.unitday').html("1");
+                    // $(this).find('.unitday').html("1");
                     $(this).find('.unitprice').html(option);
                 }
             });
@@ -269,6 +270,8 @@ $(document).ready( function () {
         } else if ($('#txt_modal_param').val() == 'receiptno') {
             $('#txt_RentNo').val(code);
             $('#txt_Date').val(name);
+            $('#txt_ReturnDate').val(option1);
+            $('#txt_PaymentMethod').val(option2);
             $('#txt_CustomerID').val(note);
             $('#txt_CustomerID').change();
             // $('#txt_SalepersonFirstName').val(option);
@@ -317,6 +320,8 @@ $(document).ready( function () {
                         <td class='col-5'>${rent_date}</td>
                         <td class='col-3'>${rent.customerid_id}</td>
                         <td class='hide'>${rent.total}</td>
+                        <td class='hide'>${rent_duedate}</td>
+                        <td class='hide'>${rent.paymentmethod}</td>
                     </tr>`;
                 });
                 $('#table_modal > tbody').html(rows);
@@ -453,7 +458,7 @@ function get_rent_detail (receiptno) {
         success: function  (data) {
             reset_table();
             //console.log(data.rentlineitem.length);
-            $("#txt_PaymentMethod").val(data.rent.payment_code__name)
+            $("#txt_PaymentMethod").val(data.rent.paymentmethod)
             $("#txt_PaymentCode").val(data.rent.payment_code)
             $("#txt_PaymentReference").val(data.rent.paymentref)
 
@@ -466,7 +471,7 @@ function get_rent_detail (receiptno) {
                 if (i < data.rentlineitem.length) {
                     $(this).find('.movieid_1 > span').html(data.rentlineitem[i].movieid);
                     $(this).find('.title').html(data.rentlineitem[i].movieid__title);
-                    $(this).find('.unitday').html(data.rentlineitem[i].unitday);
+                    // $(this).find('.unitday').html(data.rentlineitem[i].unitday);
                     $(this).find('.unitprice').html(data.rentlineitem[i].unitprice);
                 }
                 i++;
@@ -481,18 +486,39 @@ function re_calculate_total () {
     $("#table_main tbody tr").each(function() {
 
         var movieid = $(this).find('.movieid_1 > span').html();
-        //console.log (invoice_no);
         var unitprice = $(this).find('.unitprice').html();
         $(this).find('.unitprice').html(((unitprice)));
-        var unitday = $(this).find('.unitday').html();
-        $(this).find('.unitday').html(parseInt(unitday));
+        // var unitday = $(this).find('.unitday').html();
+        // $(this).find('.unitday').html(parseInt(unitday));
         
+        // if (movieid != '') {
+        //         var extendedprice = unitday * unitprice
+        //     $(this).find('.extendedprice').html(formatNumber(extendedprice));
+        //     total += extendedprice;
+        // }
+        var miliisecondsPerDay = 24*60*60*1000;
+        // if($('#txt_ReturnDate').val() != '') {
+        //     var ReturnDate = $('#txt _ReturnDate').datepicker('getDate');
+        // }
+        // else {
+        //     var ReturnDate = $('#txt_RentDate').datepicker('getDate');
+        // }
+        var ReturnDate = $('#txt_ReturnDate').datepicker('getDate');
+        var RentDate = $('#txt_Date').datepicker('getDate');
+        var unitday = (ReturnDate - RentDate)/miliisecondsPerDay;
+        $(this).find('.unitday').html(parseInt(unitday))
         if (movieid != '') {
-                var extendedprice = unitday * unitprice
-            $(this).find('.extendedprice').html(formatNumber(extendedprice));
+            if (unitday < '1'){
+                    var extendedprice = (unitday * unitprice)+20
+                $(this).find('.extendedprice').html(formatNumber(extendedprice));
+            }
+            else{
+                    var extendedprice = (unitday * unitprice)
+                $(this).find('.extendedprice').html(formatNumber(extendedprice));
+            }
             total += extendedprice;
         }
-    });
+});
 
     $('#lbl_Total').text(formatNumber(total));
     $('#txt_Total').val($('#lbl_Total').text());
