@@ -10,12 +10,11 @@
 {% block content %}
 
     <div style="font-size:0;" class="bg-secondary">
-        <input type='image' id='btnNew' src="{% static 'images/newOn.gif' %}"  alt="newOn">  
-        <input type='image' id='btnEdit' src="{% static 'images/รายการหนังที่เช่า.jpg' %}" width="" height="42"  alt="รายการหนังที่เช่า">
-        <input type='image' id='btnPdf' src="{% static 'images/Bill.jpg' %}" width="" height="42" alt="Bill">
+        <input type='image' id='btnNew' src="{% static 'images/newOn.gif' %}"  alt="newOn">
+        <input type='image' id='btnEdit' src="{% static 'images/list movie.jpg' %}" height="42px" alt="list movie">
         <input type='image' id='btnSave' src="{% static 'images/saveOn.gif' %}"  alt="saveOn">
         <!-- <input type='image' id='btnDelete' src="{% static 'images/deleteOn.gif' %}"  alt="deleteOn"> -->
-        
+        <input type='image' id='btnPdf' src="{% static 'images/Bill.jpg' %}" height="42px" alt="Bill">
         <!-- <input type='image' id='btnPrint' src="{% static 'images/printOn.gif' %}"  alt="printOn"> -->
     </div>
     <br />
@@ -111,6 +110,7 @@
                     <input type='text' id='txt_PaymentCode' name='payment_code' class='form-control' placeholder='Payment Code' required>
                     <div class="valid-feedback">Valid.</div>
                     <div class="invalid-feedback">Check this checkbox to continue.</div>
+                    <input type='text' id='txt_PaymentMethod' name='paymentmethod' class='form-control' placeholder='Payment Method' required>
                     <button type='button' class="btn btn-default btn-sm search_payment_code">
                         <span class="glyphicon glyphicon-search"></span>
                     </button>
@@ -155,8 +155,8 @@
                     <th class="col-2 table-active" scope="row" >*Unit Day</th>
                     <th class="col-2 table-active" scope="row" >Unit Price</th>
                     <th class="col-2 table-active" scope="row" >Extended Price</th>
-                    <td class="col-1" align="center">
-                        <span class="table-add glyphicon glyphicon-plus"></span>
+                    <td class="col-0" align="center">
+                        <span class="table-add glyphicon glyphicon-pluss"></span>
                     </td>
                 </tr>
                 <tr class="d-flex hide">
@@ -171,8 +171,8 @@
                     <td class="col-2 unitday" scope="row" pattern="^[0-9]" align="right" contenteditable="true"></td>
                     <td class="col-2 unitprice table-warning" align="right" scope="row"></td>
                     <td class="col-2 extendedprice table-warning" scope="row" align="right"></td>
-                    <td class="col-1"align="center">
-                        <span class="table-remove glyphicon glyphicon-remove"></span>
+                    <td class="col-0"align="center">
+                        <span class="table-remove glyphicon glyphicon-removee"></span>
                     </td>
                 </tr>
             </thead>

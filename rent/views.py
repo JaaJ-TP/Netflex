@@ -1,4 +1,4 @@
-from django.shortcuts import render
+
 
 # Create your views here.
 from django.shortcuts import render
@@ -16,23 +16,19 @@ from django.forms.models import model_to_dict
 from django.db.models import Max
 from django.db import connection
 from rent.models import *
-import json
-
+import json 
 # Create your views here.
 @login_required (login_url="login")
 def index(request):
     data = {}
     return render(request,'rent/rent.html', data)
 
-def home(request):
-    return render(request, "home.html", {})
-
 class PaymentList(View):
     def get(self, request):
         payments = list(Payment.objects.all().values())
         data = dict()
         data['payments'] = payments
-        
+        print(data)
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
         return response
@@ -46,6 +42,7 @@ class PaymentDetail(View):
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
         return response
+
 
 # class ActorList(View):
 #     def get(self, request):
@@ -261,7 +258,7 @@ class RentDelete(View):
 class RentPDF(View):
     def get(self, request, pk, pk2):
         receiptno = pk + "/" + pk2
-        rent = list(Rent.objects.select_related("customer").filter(receiptno=receiptno).values('receiptno', 'date','duedate','customerid','customerid__cfname', 'customerid__clname', 'customerid__cphone','customerid__cemail','salefname','salelname','paymentref','total'))
+        rent = list(Rent.objects.select_related("customer").filter(receiptno=receiptno).values('receiptno', 'date','duedate','customerid','customerid__cfname', 'customerid__clname', 'customerid__cphone','customerid__cemail','paymentmethod','paymentref','total'))
         rentlineitem = list(RentLineItem.objects.select_related('movieid').filter(receiptno=receiptno).order_by('lineitem').values("lineitem", "movieid", "movieid__title", "unitday",'unitprice','extendedprice'))
         data = dict()
         data['rent'] = rent[0]
@@ -276,8 +273,7 @@ class RentReport(View):
             cursor.execute(
                 'SELECT r.receiptno as "Receipt No",r.date as "Rent Date",r.duedate as "Return Date",r.customerid as "Customer ID"'
                 ',c.cfname as "Customer First Name",c.clname as "Customer Last Name",c.cphone as "Phone",c.cemail as "Email",'
-                ' r.paymentmethod as "Payment Method"'
-                ',r.paymentref as "Payment Reference",r.total as "Total"'
+                'r.paymentmethod as "Payment Method",r.paymentref as "Payment Reference",r.total as "Total"'
                 'FROM rent as r JOIN customer as c'
                 ' ON r.customerid = c.customerid'
                 ' ORDER BY r.receiptno')
@@ -291,6 +287,25 @@ class RentReport(View):
 
         # return JsonResponse(data)
         return render(request, 'rent/report.html', data)
+
+# # def diffdate(str):
+# def diffdate(str):
+#     start = datetime(Rent.date)
+#     end = datetime(Rent.duedate)
+#     self.objects.create(start_datetime = start,start_date = start.date(),end_datetime = end, end_date=end.date())
+#     Rent.objects.filter(start_datetime__year=Extract('end_datetime', 'date')).count()
+
+# def diffdate(str):
+#     if request.method=='Post':
+#         date = request.POST['date']
+#         date = request.POST['duedate']
+#         try
+#             t=Attendence.objects.filter()
+
+# def diffdate():
+#     firstDate = Rent.date()
+#     SecondDate = Rent.duedate()
+#     unitday = firstDate - SecondDate
 
 
 def dictfetchall(cursor):
