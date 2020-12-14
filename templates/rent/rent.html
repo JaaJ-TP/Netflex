@@ -38,14 +38,12 @@
                     <input type='text' id='txt_Date' name='date' class='form-control' readonly>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-8 col-12 col-auto">
+            <div class="col-lg-5 col-md-8 col-12 col-auto">
                 <div class='input-group mb-2'>
                     <div class='input-group-prepend'>
                         <div class='input-group-text'>*Return Date :</div>
                     </div>
                     <input type='text' id='txt_ReturnDate' name='duedate' class='form-control' required>
-                    <div class="valid-feedback">Valid.</div>
-                    <div class="invalid-feedback">Check this checkbox to continue.</div>
                     <button type='button' class="btn btn-default" id='btn_ReturnDate'>
                         <span class="glyphicon glyphicon-calendar"></span>
                     </button>
@@ -62,9 +60,9 @@
                     <input type='text' id='txt_CustomerID' name='customerid' class='form-control' placeholder='Customer ID' required>
                     <div class="valid-feedback">Valid.</div>
                     <div class="invalid-feedback">Check this checkbox to continue.</div>
-                    <button type='button' class="btn btn-default btn-sm search_customerid">
+                    <!-- <button type='button' class="btn btn-default btn-sm search_customerid">
                         <span class="glyphicon glyphicon-search"></span>
-                    </button>
+                    </button> -->
                 </div>
             </div>
             <div class="col-lg-3 col-md-8 col-12 col-auto">
@@ -102,23 +100,23 @@
         </div>
         <br/>
         <div class='form-row div-2'>
-            <div class="col-lg-4 col-md-8 col-12 col-auto">
+            <div class="col-lg-3 col-md-8 col-12 col-auto">
                 <div class='input-group mb-2'>
                     <div class='input-group-prepend'>
-                        <div class='input-group-text'>*Payment Method :</div>
+                        <div class='input-group-text'>*Payment Method:</div>
                     </div>
                     <input type='text' id='txt_PaymentCode' name='payment_code' class='form-control' placeholder='Payment Code' required>
                     <div class="valid-feedback">Valid.</div>
                     <div class="invalid-feedback">Check this checkbox to continue.</div>
                     <input type='text' id='txt_PaymentMethod' name='paymentmethod' class='form-control' placeholder='Payment Method' required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Check this checkbox to continue.</div>
                     <button type='button' class="btn btn-default btn-sm search_payment_code">
                         <span class="glyphicon glyphicon-search"></span>
                     </button>
                 </div>
             </div>
-        </div>
-        <br/>
-        <div class='form-row'>
+            <div class="col-0 col-lg-1"></div>
             <div class="col-lg-4 col-md-8 col-12 col-auto">
                 <div class='input-group mb-2'>
                     <div class='input-group-prepend'>
@@ -168,7 +166,7 @@
                         </button>
                     </td>
                     <td class="col-2 title table-warning" scope="row"></td>
-                    <td class="col-2 unitday" scope="row" pattern="^[0-9]" align="right" contenteditable="true"></td>
+                    <td class="col-2 unitday table-warning" align="right" scope="row"></td>
                     <td class="col-2 unitprice table-warning" align="right" scope="row"></td>
                     <td class="col-2 extendedprice table-warning" scope="row" align="right"></td>
                     <td class="col-0"align="center">

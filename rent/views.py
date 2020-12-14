@@ -41,6 +41,7 @@ class PaymentDetail(View):
         print(data)
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
+        print(data)
         return response
 
 
@@ -148,6 +149,7 @@ class RentDetail(View):
 
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
+        print(data)
         return response
 
 

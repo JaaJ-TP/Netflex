@@ -22,7 +22,7 @@ CREATE TABLE customer (
     customerId character varying(10),
     cName character varying(100),
     cLname character varying(100),
-	cPhone character varying(100),
+ cPhone character varying(100),
     cEmail character varying(100),
     PRIMARY KEY (customerId)
 );
@@ -33,7 +33,7 @@ CREATE TABLE movie (
     genre character varying(100),
     copyRightDate date,
     producerId character varying(100),
-	price numeric(18,2),
+ price numeric(18,2),
     PRIMARY KEY (movieId),
     CONSTRAINT movie_producer_producerId_fkey FOREIGN KEY (producerId)
         REFERENCES producer (producerId) MATCH SIMPLE
@@ -42,16 +42,16 @@ CREATE TABLE movie (
 
 CREATE TABLE rent (
     receiptno character varying(10),
-	date date,
-	duedate date,
-	customerid character varying(10),
-    paymentmethod character varying(100),
+ date date,
+ duedate date,
+    customerid character varying(10),
+    paymentmethod date,
     paymentref character varying(100),
     total numeric(18,2),
-    PRIMARY KEY (receiptno),
-	CONSTRAINT rent_customer_customerid_fkey FOREIGN KEY (customerid)
+    PRIMARY KEY (receiptNo),
+ CONSTRAINT rent_customer_customerid_fkey FOREIGN KEY (customerid)
         REFERENCES customer (customerid) MATCH SIMPLE,
-	    ON UPDATE NO ACTION ON DELETE NO ACTION
+     ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 CREATE TABLE rent_line_item (
