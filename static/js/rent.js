@@ -486,6 +486,7 @@ function re_calculate_total () {
         $(this).find('.unitprice').html(((unitprice)));
         var unitday = $(this).find('.unitday').html();
         $(this).find('.unitday').html(parseInt(unitday));
+        
         if (movieid != '') {
                 var extendedprice = unitday * unitprice
             $(this).find('.extendedprice').html(formatNumber(extendedprice));

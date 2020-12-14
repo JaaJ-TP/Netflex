@@ -15,7 +15,7 @@ from django.db import connection
 from rent.models import *
 import json
 
-from datetime import datetime
+from datetime import date,datetime
 from django.db.models.functions import Extract
 
 
@@ -274,7 +274,20 @@ class RentReport(View):
 # def diffdate(str):
 #     start = datetime(Rent.date)
 #     end = datetime(Rent.duedate)
-#     Rent.objects.create(start_datetime = start,start_date = start.date(),end_datetime = end, end)
+#     self.objects.create(start_datetime = start,start_date = start.date(),end_datetime = end, end_date=end.date())
+#     Rent.objects.filter(start_datetime__year=Extract('end_datetime', 'date')).count()
+
+# def diffdate(str):
+#     if request.method=='Post':
+#         date = request.POST['date']
+#         date = request.POST['duedate']
+#         try
+#             t=Attendence.objects.filter()
+
+# def diffdate():
+#     firstDate = Rent.date()
+#     SecondDate = Rent.duedate()
+#     unitday = firstDate - SecondDate
 
 
 def dictfetchall(cursor):
