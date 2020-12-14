@@ -26,12 +26,10 @@ from accounts.views import login_view, register_view, logout_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/login/', login_view),
-    path('accounts/register/', register_view),
+    path('', movie_views.index, name='index'),
+    path('accounts/login/', login_view, name='login'),
+    path('accounts/register/', register_view,name='register'),
     path('accounts/logout/', logout_view),
-
-
-
 
     path('report', report_views.index, name='index'),
     path('report/ReportListAllMovies', report_views.ReportListAllMovies),

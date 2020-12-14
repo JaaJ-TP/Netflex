@@ -55,7 +55,3 @@ class UserRegisterForm(forms.ModelForm):
                 "This email has already been registered")
         return super(UserRegisterForm, self).clean(*args, **kwargs)
 
-class CreateUserForm(UserCreationForm):
-	class Meta:
-		model = User
-		fields = ['username', 'email', 'password1', 'password2']

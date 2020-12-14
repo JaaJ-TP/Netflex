@@ -32,6 +32,7 @@ class PaymentList(View):
         payments = list(Payment.objects.all().values())
         data = dict()
         data['payments'] = payments
+        
         response = JsonResponse(data)
         response["Access-Control-Allow-Origin"] = "*"
         return response
@@ -46,59 +47,59 @@ class PaymentDetail(View):
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
-class ActorList(View):
-    def get(self, request):
-        actors = list(Actor.objects.all().values())
-        data = dict()
-        data['actors'] = actors
-        response = JsonResponse(data)
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
+# class ActorList(View):
+#     def get(self, request):
+#         actors = list(Actor.objects.all().values())
+#         data = dict()
+#         data['actors'] = actors
+#         response = JsonResponse(data)
+#         response["Access-Control-Allow-Origin"] = "*"
+#         return response
 
-class ActorDetail(View):
-    def get(self, request, pk):
-        actor = pk
-        data = dict()
-        data['actors'] = model_to_dict(actor)
-        response = JsonResponse(data)
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
+# class ActorDetail(View):
+#     def get(self, request, pk):
+#         actor = pk
+#         data = dict()
+#         data['actors'] = model_to_dict(actor)
+#         response = JsonResponse(data)
+#         response["Access-Control-Allow-Origin"] = "*"
+#         return response
 
-class ProducerList(View):
-    def get(self, request):
-        producers = list(Producer.objects.all().values())
-        data = dict()
-        data['producers'] = producers
-        response = JsonResponse(data)
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
+# class ProducerList(View):
+#     def get(self, request):
+#         producers = list(Producer.objects.all().values())
+#         data = dict()
+#         data['producers'] = producers
+#         response = JsonResponse(data)
+#         response["Access-Control-Allow-Origin"] = "*"
+#         return response
 
-class ProducerDetail(View):
-    def get(self, request, pk):
-        producer = get_object_or_404(Producer, pk=pk)
-        data = dict()
-        data['producers'] = model_to_dict(producer)
-        response = JsonResponse(data)
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
+# class ProducerDetail(View):
+#     def get(self, request, pk):
+#         producer = get_object_or_404(Producer, pk=pk)
+#         data = dict()
+#         data['producers'] = model_to_dict(producer)
+#         response = JsonResponse(data)
+#         response["Access-Control-Allow-Origin"] = "*"
+#         return response
 
-class SalepersonList(View):
-    def get(self, request):
-        salepersons = list(Saleperson.objects.all().values())
-        data = dict()
-        data['salepersons'] = salepersons
-        response = JsonResponse(data)
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
+# class SalepersonList(View):
+#     def get(self, request):
+#         salepersons = list(Saleperson.objects.all().values())
+#         data = dict()
+#         data['salepersons'] = salepersons
+#         response = JsonResponse(data)
+#         response["Access-Control-Allow-Origin"] = "*"
+#         return response
 
-class SalepersonDetail(View):
-    def get(self, request, pk):
-        saleperson = get_object_or_404(Saleperson, pk=pk)
-        data = dict()
-        data['salepersons'] = model_to_dict(saleperson)
-        response = JsonResponse(data)
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
+# class SalepersonDetail(View):
+#     def get(self, request, pk):
+#         saleperson = get_object_or_404(Saleperson, pk=pk)
+#         data = dict()
+#         data['salepersons'] = model_to_dict(saleperson)
+#         response = JsonResponse(data)
+#         response["Access-Control-Allow-Origin"] = "*"
+#         return response
 
 class CustomerList(View):
     def get(self, request):
